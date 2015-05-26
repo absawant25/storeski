@@ -1,0 +1,4 @@
+node_modules
+#Optional things
+*.sublime-project
+*.sublime-workspace
