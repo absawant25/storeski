@@ -1,8 +1,9 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var bcrypt = require('bcryptjs');
 
+var Schema = mongoose.Schema;
 
 var emailSchema = new Schema ({
 	type : {type:String},
@@ -22,6 +23,20 @@ var userSchema = new Schema({
 	emails: [emailSchema],
 	contacts : [contactSchema]
 });
+
+userSchema.statics.hashPassword = function (passwordRaw, fn) {
+
+	bcrypt.genSalt(10, function(err, salt) {
+
+		bcrypt.hash(passwordRaw, salt, fn);
+	});
+
+}
+
+userSchema.statics.comparePasswordAndHash = function (password, passwordHash, fn) {
+
+	bcrypt.compare(password, passwordHash, fn);
+}
 
 try {
 

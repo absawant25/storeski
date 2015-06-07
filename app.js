@@ -7,21 +7,26 @@ var bodyParser = require('body-parser');
 var http = require("http");
 var mongoose = require("mongoose");
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
+var router = express.Router();
+
 var config = require('./config');
 
-var app = express();
+try {
+  var app = express();
+} catch (e) {
+  console.log(e);
+}
 
-app.configure(function () {
-  app.set('dburl', config.db[app.settings.env]);
-  mongoose.connect(app.get('dbUrl'));
-});
+app.set('dbUrl', config.db[app.settings.env]);
+//mongoose.connect(app.get('dbUrl'));
 
 var server = http.createServer(app);
 
 app.set("port", process.env.PORT || 3000);
 app.listen(3000);
+console.log("The magic happens on port : " + app.get('port'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,8 +40,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+//app.use('/', routes);
+//app.use('/users', users);
+
+app.get('/add/:first/:second', function (req, res, next) {
+
+  var sum = parseFloat(req.params.first) + parseFloat(req.params.second);
+  res.status(200).send(String(sum));
+
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -69,5 +81,4 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-module.exports = app;
+module.exports.app = app;
