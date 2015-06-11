@@ -6,9 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require("http");
 var mongoose = require("mongoose");
+var expressValidator = require("express-validator");
+
 
 //var routes = require('./routes/index');
-//var users = require('./routes/users');
+var users = require('./users/routes');
 var router = express.Router();
 
 var config = require('./config');
@@ -38,7 +40,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(expressValidator());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 //app.use('/', routes);
 //app.use('/users', users);
@@ -49,6 +53,8 @@ app.get('/add/:first/:second', function (req, res, next) {
   res.status(200).send(String(sum));
 
 });
+
+app.post('/signup', users.signup);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
